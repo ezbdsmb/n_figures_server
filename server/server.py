@@ -1,15 +1,19 @@
-import socketserver
+import socket
 
 
-class MyUDPHandler(socketserver.BaseRequestHandler):
-    def handle(self):
-        data = self.request[0].strip()
-        socket = self.request[1]
-        print(self.client_address[1], "wrote:", data)
-        socket.sendto(b"Queen 1", self.client_address)
+class UDPServer():
+    def __init__(self, host, port):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind((host, port))
+
+    def run(self):
+        while True:
+            data, addr = self.sock.recvfrom(1024)
+            print("received message:", data, "from", addr)
+
+            self.sock.sendto(b"ok", addr)
 
 
 if __name__ == "__main__":
-    HOST, PORT = "localhost", 9999
-    with socketserver.UDPServer((HOST, PORT), MyUDPHandler) as server:
-        server.serve_forever()
+    server = UDPServer("localhost", 9999)
+    server.run()
