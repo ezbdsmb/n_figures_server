@@ -9,6 +9,7 @@ class ChessServer(UDPServer):
         self.game = Game()
 
         self.adresse_book = dict()
+        self.judge_address = None
 
     def exec_loop(self):
         while True:
@@ -18,8 +19,8 @@ class ChessServer(UDPServer):
 
                 self.response(type, params, addr)
 
-                print('received: ', cmd, addr)
-                print('parsed: ', type, params)
+                #print('received: ', cmd, addr)
+                print('parsed msg: ', type, params, addr)
 
     def response(self, type, params, addr):
         if type == 'invalid' or params == 'invalid':
@@ -34,7 +35,7 @@ class ChessServer(UDPServer):
 
             elif type == 'init_judge':
                 self.game.set_judge()
-                self.adresse_book['judge'] = addr
+                self.judge_address = addr
                 self.send(bytes(f'{type} ok', encoding='utf-8'), addr)
 
             elif type == 'set_params':
@@ -49,8 +50,11 @@ class ChessServer(UDPServer):
 
                 self.send(bytes(f'{type} ok', encoding='utf-8'), addr)
 
-                for adresse in self.adresse_book.values():
-                    self.send(bytes(f'{type} ok', encoding='utf-8'), adresse)
+                #for adresse in self.adresse_book.values():
+                #    self.send(bytes(f'{type} ok', encoding='utf-8'), adresse)
+
+                self.send(bytes(f'agents {str(self.adresse_book)}', encoding='utf-8'), self.judge_address)
+
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
 
