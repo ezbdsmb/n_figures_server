@@ -3,6 +3,7 @@ from server.msg_parser import parse_command
 from server.msg_formatter import format_dict
 from chess.game import *
 
+
 class ChessServer(UDPServer):
     def __init__(self, host, port):
         super().__init__(host, port)
@@ -50,17 +51,13 @@ class ChessServer(UDPServer):
 
                 self.send(bytes(f'{type} ok', encoding='utf-8'), addr)
 
-                #for adresse in self.adresse_book.values():
-                #    self.send(bytes(f'{type} ok', encoding='utf-8'), adresse)
-
+                self.send(bytes(f'board_size {str(self.game.board_size())}', encoding='utf-8'), self.judge_address)
                 self.send(bytes(f'agents {format_dict(self.adresse_book)}', encoding='utf-8'), self.judge_address)
 
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
 
-
-
-        elif  self.game.state == SOLVING:
+        elif self.game.state == SOLVING:
             if type == 'change_pos':
                 self.game.update_positions(params)
 
@@ -77,4 +74,3 @@ class ChessServer(UDPServer):
     def start(self):
         self._start_recv()
         self.exec_loop()
-
