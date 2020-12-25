@@ -1,38 +1,86 @@
-from UDPServer import UDPServer
+from server.UDPServer import UDPServer
+from server.msg_parser import parse_command
+from chess.game import *
 
 class ChessServer(UDPServer):
+    def __init__(self, host, port):
+        super().__init__(host, port)
+
+        self.game = Game()
+
+        self.adresse_book = dict()
+
     def exec_loop(self):
         while True:
             while not self.msg_queue.empty():
-                data, addr = self.msg_queue.get()
-                type, params = self.parse_command(data)
+                cmd, addr = self.msg_queue.get()
+                type, params = parse_command(cmd)
 
                 self.response(type, params, addr)
 
                 print('type:', type, 'params:', params, 'addr:', addr)
 
     def response(self, type, params, addr):
-        if type == 'init':
-            # TODO: а можно ли его инициализировать
-            self.send(bytes('init_ok ' + params[0], encoding='utf-8'), addr)
+        if type == 'invalid' or params == 'invalid':
+            self.send(bytes(f'bad_language {type}', encoding='utf-8'), addr)
+            return
+
+        if self.game.state == PRE:
+            if type == 'init':
+                name = self.game.add_figure(params)
+                self.adresse_book[name] = addr
+                self.send(bytes(f'{type} ok {name}', encoding='utf-8'), addr)
+
+            elif type == 'init_judge':
+                self.game.set_judge()
+                self.adresse_book['judge'] = addr
+                self.send(bytes(f'{type} ok', encoding='utf-8'), addr)
+
+            elif type == 'set_params':
+                self.game.set_board_size(params)
+                self.send(bytes(f'{type} {str(self.game.board_size())}', encoding='utf-8'), addr)
+
+            elif type == 'get_params':
+                self.send(bytes(f'{type} {str(self.game.board_size())}', encoding='utf-8'), addr)
+
+            elif type == 'start_solving':
+                self.game.start()
+
+                self.send(bytes(f'{type} ok', encoding='utf-8'), addr)
+
+                for adresse in self.adresse_book.values():
+                    self.send(bytes(f'{type} ok', encoding='utf-8'), adresse)
+            else:
+                self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
 
 
-    def parse_command(self, data):
-        parsed_msg = data.split(' ', 1)
 
-        type = parsed_msg[0]
-        params = []
+        elif  self.game.state == SOLVING:
+            if type == 'change_pos':
+                self.game.update_positions(params)
 
-        if len(parsed_msg) != 1:
-            params = parsed_msg[1]
+                print(str(self.game.figure_positions()))
 
-        return type, params
+                for adresse in self.adresse_book.values():
+                    self.send(bytes(f'board {str(self.game.figure_positions())}', encoding='utf-8'), adresse)
+
+            else:
+                self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def start(self):
         self._start_recv()
         self.exec_loop()
 
-if __name__ == "__main__":
-    server = ChessServer("localhost", 9999)
-
-    server.start()

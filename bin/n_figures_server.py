@@ -1,8 +1,10 @@
-
+from server.ChessServer import ChessServer
 
 
 
 
 
 if __name__ == "__main__":
-    pass
+    server = ChessServer("localhost", 9998)
+
+    server.start()
