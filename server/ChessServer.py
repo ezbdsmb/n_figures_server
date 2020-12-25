@@ -1,5 +1,6 @@
 from server.UDPServer import UDPServer
 from server.msg_parser import parse_command
+from server.msg_formatter import format_dict
 from chess.game import *
 
 class ChessServer(UDPServer):
@@ -53,7 +54,7 @@ class ChessServer(UDPServer):
                 #for adresse in self.adresse_book.values():
                 #    self.send(bytes(f'{type} ok', encoding='utf-8'), adresse)
 
-                self.send(bytes(f'agents {str(self.adresse_book)}', encoding='utf-8'), self.judge_address)
+                self.send(bytes(f'agents {format_dict(self.adresse_book)}', encoding='utf-8'), self.judge_address)
 
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
@@ -67,7 +68,7 @@ class ChessServer(UDPServer):
                 print(str(self.game.figure_positions()))
 
                 for adresse in self.adresse_book.values():
-                    self.send(bytes(f'board {str(self.game.figure_positions())}', encoding='utf-8'), adresse)
+                    self.send(bytes(f'board {format_dict(self.game.figure_positions())}', encoding='utf-8'), adresse)
 
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
