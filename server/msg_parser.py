@@ -1,11 +1,10 @@
 import re
 
 
-
-
 cmd_types = ['init', 'init_judge', 'start_solving', 'set_params', 'get_params', 'change_pos']
-
 cmd_types_without_params = ['init_judge', 'start_solving', 'get_params']
+figure_names = ['queen', 'pawn', 'bishop', 'king', 'knight', 'rock']
+
 
 def parse_type(cmd):
     parsed_cmd = cmd.split(' ', 1)
@@ -16,8 +15,6 @@ def parse_type(cmd):
 
     return type
 
-
-figure_names = ['queen', 'pawn', 'bishop', 'king', 'knight', 'rock']
 
 def parse_params(cmd, type):
     if type in cmd_types_without_params:
@@ -55,6 +52,10 @@ def parse_params(cmd, type):
 
     elif type == 'change_pos':
         figure_positions = re.findall(r'\([a-zA-Z]*\d* \d* \d*\)', params)
+
+        if len(figure_positions) < 1:
+            return 'invalid'
+
         new_positions = dict()
 
         for figure_position in figure_positions:
@@ -67,9 +68,6 @@ def parse_params(cmd, type):
 
         return new_positions
 
-
-
-
 def parse_command(cmd):
     type = parse_type(cmd)
 
@@ -79,8 +77,3 @@ def parse_command(cmd):
     params = parse_params(cmd, type)
 
     return type, params
-
-
-
-
-print(parse_command('set_param -1 2'))

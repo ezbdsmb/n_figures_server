@@ -20,7 +20,6 @@ class ChessServer(UDPServer):
 
                 self.response(type, params, addr)
 
-                #print('received: ', cmd, addr)
                 print('parsed msg: ', type, params, addr)
 
     def response(self, type, params, addr):
@@ -72,17 +71,6 @@ class ChessServer(UDPServer):
 
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
