@@ -15,7 +15,7 @@ class Game:
         self.state = PRE
         self.judge = False
 
-        #self.pre_solve_figures_queue = queue.Queue()
+        self.pre_solve_figures_queue = queue.Queue()
 
     def start(self):
         if self.state != PRE:
@@ -34,7 +34,7 @@ class Game:
 
     def add_figure(self, type):
         name = f'{type[0]}{str(self.pre_solve_figures_queue.qsize())}'
-        #self.pre_solve_figures_queue.put(Figure(name, type))
+        self.pre_solve_figures_queue.put(Figure(name, type))
         return name
 
     def set_judge(self):
