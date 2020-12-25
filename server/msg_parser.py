@@ -54,7 +54,7 @@ def parse_params(cmd, type):
         return (board_width, board_height)
 
     elif type == 'change_pos':
-        figure_positions = re.findall(r'\([a-zA-Z]*\d* \d*\)', params)
+        figure_positions = re.findall(r'\([a-zA-Z]*\d* \d* \d*\)', params)
         new_positions = dict()
 
         for figure_position in figure_positions:

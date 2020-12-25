@@ -18,7 +18,8 @@ class ChessServer(UDPServer):
 
                 self.response(type, params, addr)
 
-                print('type:', type, 'params:', params, 'addr:', addr)
+                print('received: ', cmd, addr)
+                print('parsed: ', type, params)
 
     def response(self, type, params, addr):
         if type == 'invalid' or params == 'invalid':
