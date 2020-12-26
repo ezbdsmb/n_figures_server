@@ -40,7 +40,6 @@ class ChessServer(UDPServer):
 
             return
 
-
         if self.game.state == PRE:
             if type == 'init':
                 name = self.game.add_figure(params)
@@ -87,8 +86,6 @@ class ChessServer(UDPServer):
 
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
-
-
 
     def start(self):
         self._start_recv()
