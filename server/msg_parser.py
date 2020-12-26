@@ -1,8 +1,8 @@
 import re
 
 
-cmd_types = ['init', 'init_judge', 'start_solving', 'set_params', 'get_params', 'change_pos']
-cmd_types_without_params = ['init_judge', 'start_solving', 'get_params']
+cmd_types = ['init', 'init_judge', 'init_monitor', 'start_solving', 'set_params', 'get_params', 'change_pos']
+cmd_types_without_params = ['init_judge', 'start_solving', 'get_params', 'init_monitor']
 figure_names = ['queen', 'pawn', 'bishop', 'king', 'knight', 'rock']
 
 
