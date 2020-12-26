@@ -88,6 +88,9 @@ class ChessServer(UDPServer):
                 self.game.end()
                 print('Finish:', params)
 
+                for adresse in self.monitor_adresses:
+                    self.send(bytes(f'board_size {str(params)}', encoding='utf-8'), adresse)
+
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
 

@@ -13,6 +13,7 @@ class Game:
         self.board = Board(board_size)
         self.state = PRE
         self.judge = False
+        self.score = 0
 
         self.pre_solve_figures_queue = queue.Queue()
 
@@ -20,6 +21,7 @@ class Game:
         if self.state != PRE:
             return False
 
+        self.score = 0
         self.state = SOLVING
 
     def set_board_size(self, size):
