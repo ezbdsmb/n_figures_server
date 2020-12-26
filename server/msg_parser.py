@@ -1,6 +1,6 @@
 import re
 
-cmd_types = ['init', 'init_judge', 'init_monitor', 'start_solving', 'set_params', 'get_params', 'change_pos']
+cmd_types = ['init', 'init_judge', 'init_monitor', 'start_solving', 'set_params', 'get_params', 'change_pos', 'finish']
 cmd_types_without_params = ['init_judge', 'start_solving', 'get_params', 'init_monitor']
 figure_names = ['queen', 'pawn', 'bishop', 'king', 'knight', 'rook']
 
@@ -66,6 +66,12 @@ def parse_params(cmd, type):
             new_positions[name] = (x, y)
 
         return new_positions
+
+    elif type == 'finish':
+        if params.isnumeric():
+            return int(params)
+        else:
+            return 'invalid'
 
 
 def parse_command(cmd):

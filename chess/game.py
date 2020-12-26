@@ -6,7 +6,6 @@ from chess.figure import Figure
 
 PRE = 0
 SOLVING = 1
-POST = 2
 
 
 class Game:
@@ -30,7 +29,7 @@ class Game:
         return self.board.size()
 
     def end(self):
-        self.state = POST
+        self.state = PRE
 
     def add_figure(self, type):
         name = f'{type[0]}{str(self.pre_solve_figures_queue.qsize())}'
