@@ -32,6 +32,7 @@ class ChessServer(UDPServer):
         if type == 'init_monitor':
             self.monitor_adresses.append(addr)
             self.send(bytes(f'{type} ok', encoding='utf-8'), addr)
+            self.send(bytes(f'result {str(self.game.score)}', encoding='utf-8'), addr)
 
             if self.game.state != PRE:
                 for adresse in self.monitor_adresses:
@@ -39,7 +40,6 @@ class ChessServer(UDPServer):
                     self.send(bytes(f'board_size {str(self.game.board_size())}', encoding='utf-8'), adresse)
 
             return
-
 
         if self.game.state == PRE:
             if type == 'init':
@@ -85,10 +85,17 @@ class ChessServer(UDPServer):
                 for adresse in self.monitor_adresses:
                     self.send(bytes(f'board {format_dict(self.game.figure_positions())}', encoding='utf-8'), adresse)
 
+            elif type == 'finish':
+                #self.game.end()
+                self.game.score = params
+
+                print('Finish:', params)
+
+                for adresse in self.monitor_adresses:
+                    self.send(bytes(f'result {str(self.game.score)}', encoding='utf-8'), adresse)
+
             else:
                 self.send(bytes(f'{type} failure', encoding='utf-8'), addr)
-
-
 
     def start(self):
         self._start_recv()

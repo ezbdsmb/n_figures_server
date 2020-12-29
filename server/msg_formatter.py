@@ -1,8 +1,3 @@
-
-
-
-
-
 def format_dict(dict):
     msg = ''
 
